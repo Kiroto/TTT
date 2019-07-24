@@ -12,13 +12,16 @@
     <canvas id="gameArea" height="300px" width="300px"></canvas>
     <br>
     <h1 id="message">O's Turn</h1>
+    <br>
+    <button id="reset">Reset Game</button>
     <script>
-        let gameArea = document.getElementById("gameArea");
-        let ctx = gameArea.getContext("2d");
-        ctx.fillStyle = "#fff";
+        const oGraph = document.getElementById("O");
+        const xGraph = document.getElementById("X");
+        const messageElement = document.getElementById("message");
+        const gameArea = document.getElementById("gameArea");
+
+        const ctx = gameArea.getContext("2d");
         ctx.strokeStyle = "#000";
-        let oTurn = true;
-        let messageElement = document.getElementById("message");
         
         const XWIN = 0;
         const OWIN = 1;
@@ -26,12 +29,18 @@
         const XTURN = 3;
         const OTURN = 4;
 
-        let gameState = OTURN;
+        let gameState;
+        let gameTable;
+        function initGame(){
+            gameTable = [['','',''],
+                         ['','',''],
+                         ['','','']];
+            gameState = OTURN;
+            render();
+        }
         
-        const oGraph = document.getElementById("O");
-        const xGraph = document.getElementById("X");
-        const render = () => {            
-            ctx.fillRect(0,0,300,300);
+        function render() {            
+            ctx.clearRect(0,0,300,300);
 
             ctx.moveTo(0, 100);
             ctx.lineTo(300, 100);
@@ -42,10 +51,8 @@
             ctx.moveTo(200, 0);
             ctx.lineTo(200, 300);
             ctx.stroke();
-            console.log(gameTable);
             for (let i=0; i<3; i++) {
                 for(let k=0; k<3; k++) {
-                    console.log(gameTable[i][k])
                     if (gameTable[i][k] === "X") {
                         ctx.drawImage(xGraph, 2+k*100, 2+i*100,97,97)
                     } else if (gameTable[i][k] === "O") {
@@ -132,10 +139,9 @@
             return (gameState==OTURN?XTURN:OTURN);
         }
 
-        let gameTable = [['','',''],
-                         ['','',''],
-                         ['','','']]
-        render();
+
+        document.getElementById('reset').addEventListener('click',initGame);
+        initGame();
         gameArea.onclick = (evt) => {
             if(gameState != OTURN && gameState != XTURN){
                 return;
@@ -153,7 +159,6 @@
             }
             render()
         }
-        </script>
-    
+    </script>
 </body>
 </html>
