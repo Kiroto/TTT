@@ -6,17 +6,33 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Tic-Tac-Toe</title>
 </head>
-<body style="margin:0">
+<body style="margin:0;font-family: 'Courier New', Courier, monospace">
     <img src="./img/O.png" style="display: none" id="O">
     <img src="./img/X.png" style="display: none" id="X">
     <canvas id="gameArea" height="300px" width="300px"></canvas>
+    <br>
+    <h1 id="message">O's Turn</h1>
     <script>
         let gameArea = document.getElementById("gameArea");
         let ctx = gameArea.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.strokeStyle = "#000";
         let oTurn = true;
+        let messageElement = document.getElementById("message");
+        
+        const XWIN = 0;
+        const OWIN = 1;
+        const TIED = 2;
+        const XTURN = 3;
+        const OTURN = 4;
+
+        let gameState = OTURN;
+        
         const oGraph = document.getElementById("O");
         const xGraph = document.getElementById("X");
-        const render = () => {
+        const render = () => {            
+            ctx.fillRect(0,0,300,300);
+
             ctx.moveTo(0, 100);
             ctx.lineTo(300, 100);
             ctx.moveTo(0, 200);
@@ -37,19 +53,103 @@
                     }
                 }
             }
+            let message = "";
+            switch(gameState){
+                case XWIN:
+                    message = "X is the winner";
+                    break;                    
+                case OWIN:
+                    message = "O is the winner";
+                    break;                    
+                case TIED:
+                    message = "Game is a tie!";
+                    break;
+                case XTURN:
+                    message = "X's turn";
+                    break;
+                case OTURN:
+                    message = "O's turn";
+                    break;
+            }
+            messageElement.innerText = message;
         }
-        let gameTable = [['','',''],['','',''],['','','']]
-        render()
+
+        function calcGameState(){
+            let winner = undefined;
+
+            if(gameTable[0][0] == gameTable[0][1] && gameTable[0][0] == gameTable[0][2]){
+                if(gameTable[0][0]!=''){
+                    winner = gameTable[0][0];
+                }
+            }
+            if(gameTable[1][0] == gameTable[1][1] && gameTable[1][0] == gameTable[1][2]){
+                if(gameTable[1][0]!=''){
+                    winner = gameTable[1][0];
+                }
+            }
+            if(gameTable[2][0] == gameTable[2][1] && gameTable[2][0] == gameTable[2][2]){
+                if(gameTable[2][0]!=''){
+                    winner = gameTable[2][0];
+                }
+            }
+
+            if(gameTable[0][0] == gameTable[1][0] && gameTable[0][0] == gameTable[2][0]){
+                if(gameTable[0][0]!=''){
+                    winner = gameTable[0][0];
+                }
+            }
+            if(gameTable[0][1] == gameTable[1][1] && gameTable[0][1] == gameTable[2][1]){
+                if(gameTable[0][1]!=''){
+                    winner = gameTable[0][1];
+                }
+            }
+            if(gameTable[0][2] == gameTable[1][2] && gameTable[0][2] == gameTable[2][2]){
+                if(gameTable[0][2]!=''){
+                    winner = gameTable[0][2];
+                }
+            }
+
+            if(gameTable[0][0] == gameTable[1][1] && gameTable[0][0] == gameTable[2][2]){
+                if(gameTable[1][1]!=''){
+                    winner = gameTable[1][1];
+                }
+            }
+            if(gameTable[0][2] == gameTable[1][1] && gameTable[0][2] == gameTable[2][0]){
+                if(gameTable[1][1]!=''){
+                    winner = gameTable[1][1];
+                }
+            }
+
+            if((winner)){
+                return (winner=='X')?XWIN:OWIN;
+            }
+            
+            if(gameTable[0].indexOf('')<0 &&
+               gameTable[1].indexOf('')<0 &&
+               gameTable[2].indexOf('')<0){
+                return TIED;
+            }
+            return (gameState==OTURN?XTURN:OTURN);
+        }
+
+        let gameTable = [['','',''],
+                         ['','',''],
+                         ['','','']]
+        render();
         gameArea.onclick = (evt) => {
+            if(gameState != OTURN && gameState != XTURN){
+                return;
+            }
             const pos = [Math.floor(evt.x/100), Math.floor(evt.y/100)];
             if (gameTable[pos[1]][pos[0]] === '' ) {
                 let toWrite;
-                if (oTurn) toWrite = 'O'
-                else toWrite = 'X'
-                gameTable[pos[1]][pos[0]] = toWrite
-                oTurn = !oTurn
-            } else {
-                alert('This spot is already taken')
+                if (gameState == OTURN){
+                    toWrite = 'O';
+                } else { 
+                    toWrite = 'X';
+                }
+                gameTable[pos[1]][pos[0]] = toWrite;
+                gameState = calcGameState();
             }
             render()
         }
