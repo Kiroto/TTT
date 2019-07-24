@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tic-Tac-Toe</title>
+</head>
+<body style="margin:0">
+    <img src="./img/O.png" style="display: none" id="O">
+    <img src="./img/X.png" style="display: none" id="X">
+    <canvas id="gameArea" height="300px" width="300px"></canvas>
+    <script>
+        let gameArea = document.getElementById("gameArea");
+        let ctx = gameArea.getContext("2d");
+        let oTurn = true;
+        const oGraph = document.getElementById("O");
+        const xGraph = document.getElementById("X");
+        const render = () => {
+            ctx.moveTo(0, 100);
+            ctx.lineTo(300, 100);
+            ctx.moveTo(0, 200);
+            ctx.lineTo(300, 200);
+            ctx.moveTo(100, 0);
+            ctx.lineTo(100, 300);
+            ctx.moveTo(200, 0);
+            ctx.lineTo(200, 300);
+            ctx.stroke();
+            console.log(gameTable);
+            for (let i=0; i<3; i++) {
+                for(let k=0; k<3; k++) {
+                    console.log(gameTable[i][k])
+                    if (gameTable[i][k] === "X") {
+                        ctx.drawImage(xGraph, 2+k*100, 2+i*100,97,97)
+                    } else if (gameTable[i][k] === "O") {
+                        ctx.drawImage(oGraph, 2+k*100, 2+i*100,97,97)
+                    }
+                }
+            }
+        }
+        let gameTable = [['','',''],['','',''],['','','']]
+        render()
+        gameArea.onclick = (evt) => {
+            const pos = [Math.floor(evt.x/100), Math.floor(evt.y/100)];
+            if (gameTable[pos[1]][pos[0]] === '' ) {
+                let toWrite;
+                if (oTurn) toWrite = 'O'
+                else toWrite = 'X'
+                gameTable[pos[1]][pos[0]] = toWrite
+                oTurn = !oTurn
+            } else {
+                alert('This spot is already taken')
+            }
+            render()
+        }
+        </script>
+    
+</body>
+</html>
